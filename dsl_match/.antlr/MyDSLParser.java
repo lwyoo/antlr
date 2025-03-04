@@ -20,11 +20,12 @@ public class MyDSLParser extends Parser {
 		RBRACE=8, COMMA=9, SEMICOLON=10, ID=11, NUMBER=12, WS=13;
 	public static final int
 		RULE_prog = 0, RULE_stmt = 1, RULE_assignment = 2, RULE_matchExpr = 3, 
-		RULE_matchCaseList = 4, RULE_matchCase = 5, RULE_defaultCase = 6;
+		RULE_paramList = 4, RULE_matchCaseList = 5, RULE_matchCase = 6, RULE_defaultCase = 7, 
+		RULE_paramValues = 8, RULE_value = 9;
 	private static String[] makeRuleNames() {
 		return new String[] {
-			"prog", "stmt", "assignment", "matchExpr", "matchCaseList", "matchCase", 
-			"defaultCase"
+			"prog", "stmt", "assignment", "matchExpr", "paramList", "matchCaseList", 
+			"matchCase", "defaultCase", "paramValues", "value"
 		};
 	}
 	public static final String[] ruleNames = makeRuleNames();
@@ -115,21 +116,21 @@ public class MyDSLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(15); 
+			setState(21); 
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			do {
 				{
 				{
-				setState(14);
+				setState(20);
 				stmt();
 				}
 				}
-				setState(17); 
+				setState(23); 
 				_errHandler.sync(this);
 				_la = _input.LA(1);
 			} while ( _la==ID );
-			setState(19);
+			setState(25);
 			match(EOF);
 			}
 		}
@@ -161,7 +162,7 @@ public class MyDSLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(21);
+			setState(27);
 			assignment();
 			}
 		}
@@ -196,13 +197,13 @@ public class MyDSLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(23);
+			setState(29);
 			match(ID);
-			setState(24);
+			setState(30);
 			match(EQUAL);
-			setState(25);
+			setState(31);
 			matchExpr();
-			setState(26);
+			setState(32);
 			match(SEMICOLON);
 			}
 		}
@@ -221,7 +222,9 @@ public class MyDSLParser extends Parser {
 	public static class MatchExprContext extends ParserRuleContext {
 		public TerminalNode MATCH() { return getToken(MyDSLParser.MATCH, 0); }
 		public TerminalNode LPAREN() { return getToken(MyDSLParser.LPAREN, 0); }
-		public TerminalNode ID() { return getToken(MyDSLParser.ID, 0); }
+		public ParamListContext paramList() {
+			return getRuleContext(ParamListContext.class,0);
+		}
 		public TerminalNode RPAREN() { return getToken(MyDSLParser.RPAREN, 0); }
 		public TerminalNode LBRACE() { return getToken(MyDSLParser.LBRACE, 0); }
 		public MatchCaseListContext matchCaseList() {
@@ -240,20 +243,74 @@ public class MyDSLParser extends Parser {
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(28);
-			match(MATCH);
-			setState(29);
-			match(LPAREN);
-			setState(30);
-			match(ID);
-			setState(31);
-			match(RPAREN);
-			setState(32);
-			match(LBRACE);
-			setState(33);
-			matchCaseList();
 			setState(34);
+			match(MATCH);
+			setState(35);
+			match(LPAREN);
+			setState(36);
+			paramList();
+			setState(37);
+			match(RPAREN);
+			setState(38);
+			match(LBRACE);
+			setState(39);
+			matchCaseList();
+			setState(40);
 			match(RBRACE);
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class ParamListContext extends ParserRuleContext {
+		public List<TerminalNode> ID() { return getTokens(MyDSLParser.ID); }
+		public TerminalNode ID(int i) {
+			return getToken(MyDSLParser.ID, i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(MyDSLParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(MyDSLParser.COMMA, i);
+		}
+		public ParamListContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_paramList; }
+	}
+
+	public final ParamListContext paramList() throws RecognitionException {
+		ParamListContext _localctx = new ParamListContext(_ctx, getState());
+		enterRule(_localctx, 8, RULE_paramList);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(42);
+			match(ID);
+			setState(47);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				setState(43);
+				match(COMMA);
+				setState(44);
+				match(ID);
+				}
+				}
+				setState(49);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
 			}
 		}
 		catch (RecognitionException re) {
@@ -290,50 +347,50 @@ public class MyDSLParser extends Parser {
 
 	public final MatchCaseListContext matchCaseList() throws RecognitionException {
 		MatchCaseListContext _localctx = new MatchCaseListContext(_ctx, getState());
-		enterRule(_localctx, 8, RULE_matchCaseList);
+		enterRule(_localctx, 10, RULE_matchCaseList);
 		int _la;
 		try {
 			int _alt;
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(36);
+			setState(50);
 			matchCase();
-			setState(41);
+			setState(55);
 			_errHandler.sync(this);
-			_alt = getInterpreter().adaptivePredict(_input,1,_ctx);
+			_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			while ( _alt!=2 && _alt!=org.antlr.v4.runtime.atn.ATN.INVALID_ALT_NUMBER ) {
 				if ( _alt==1 ) {
 					{
 					{
-					setState(37);
+					setState(51);
 					match(COMMA);
-					setState(38);
+					setState(52);
 					matchCase();
 					}
 					} 
 				}
-				setState(43);
+				setState(57);
 				_errHandler.sync(this);
-				_alt = getInterpreter().adaptivePredict(_input,1,_ctx);
+				_alt = getInterpreter().adaptivePredict(_input,2,_ctx);
 			}
-			setState(45);
+			setState(59);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==COMMA) {
 				{
-				setState(44);
+				setState(58);
 				match(COMMA);
 				}
 			}
 
-			setState(47);
+			setState(61);
 			defaultCase();
-			setState(49);
+			setState(63);
 			_errHandler.sync(this);
 			_la = _input.LA(1);
 			if (_la==COMMA) {
 				{
-				setState(48);
+				setState(62);
 				match(COMMA);
 				}
 			}
@@ -354,7 +411,9 @@ public class MyDSLParser extends Parser {
 	@SuppressWarnings("CheckReturnValue")
 	public static class MatchCaseContext extends ParserRuleContext {
 		public TerminalNode LPAREN() { return getToken(MyDSLParser.LPAREN, 0); }
-		public TerminalNode NUMBER() { return getToken(MyDSLParser.NUMBER, 0); }
+		public ParamValuesContext paramValues() {
+			return getRuleContext(ParamValuesContext.class,0);
+		}
 		public TerminalNode RPAREN() { return getToken(MyDSLParser.RPAREN, 0); }
 		public TerminalNode ARROW() { return getToken(MyDSLParser.ARROW, 0); }
 		public TerminalNode ID() { return getToken(MyDSLParser.ID, 0); }
@@ -366,19 +425,19 @@ public class MyDSLParser extends Parser {
 
 	public final MatchCaseContext matchCase() throws RecognitionException {
 		MatchCaseContext _localctx = new MatchCaseContext(_ctx, getState());
-		enterRule(_localctx, 10, RULE_matchCase);
+		enterRule(_localctx, 12, RULE_matchCase);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(51);
+			setState(65);
 			match(LPAREN);
-			setState(52);
-			match(NUMBER);
-			setState(53);
+			setState(66);
+			paramValues();
+			setState(67);
 			match(RPAREN);
-			setState(54);
+			setState(68);
 			match(ARROW);
-			setState(55);
+			setState(69);
 			match(ID);
 			}
 		}
@@ -408,19 +467,19 @@ public class MyDSLParser extends Parser {
 
 	public final DefaultCaseContext defaultCase() throws RecognitionException {
 		DefaultCaseContext _localctx = new DefaultCaseContext(_ctx, getState());
-		enterRule(_localctx, 12, RULE_defaultCase);
+		enterRule(_localctx, 14, RULE_defaultCase);
 		try {
 			enterOuterAlt(_localctx, 1);
 			{
-			setState(57);
+			setState(71);
 			match(LPAREN);
-			setState(58);
+			setState(72);
 			match(UNDERSCORE);
-			setState(59);
+			setState(73);
 			match(RPAREN);
-			setState(60);
+			setState(74);
 			match(ARROW);
-			setState(61);
+			setState(75);
 			match(ID);
 			}
 		}
@@ -435,44 +494,152 @@ public class MyDSLParser extends Parser {
 		return _localctx;
 	}
 
+	@SuppressWarnings("CheckReturnValue")
+	public static class ParamValuesContext extends ParserRuleContext {
+		public List<ValueContext> value() {
+			return getRuleContexts(ValueContext.class);
+		}
+		public ValueContext value(int i) {
+			return getRuleContext(ValueContext.class,i);
+		}
+		public List<TerminalNode> COMMA() { return getTokens(MyDSLParser.COMMA); }
+		public TerminalNode COMMA(int i) {
+			return getToken(MyDSLParser.COMMA, i);
+		}
+		public ParamValuesContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_paramValues; }
+	}
+
+	public final ParamValuesContext paramValues() throws RecognitionException {
+		ParamValuesContext _localctx = new ParamValuesContext(_ctx, getState());
+		enterRule(_localctx, 16, RULE_paramValues);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(77);
+			value();
+			setState(82);
+			_errHandler.sync(this);
+			_la = _input.LA(1);
+			while (_la==COMMA) {
+				{
+				{
+				setState(78);
+				match(COMMA);
+				setState(79);
+				value();
+				}
+				}
+				setState(84);
+				_errHandler.sync(this);
+				_la = _input.LA(1);
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
+	@SuppressWarnings("CheckReturnValue")
+	public static class ValueContext extends ParserRuleContext {
+		public TerminalNode NUMBER() { return getToken(MyDSLParser.NUMBER, 0); }
+		public TerminalNode ID() { return getToken(MyDSLParser.ID, 0); }
+		public TerminalNode UNDERSCORE() { return getToken(MyDSLParser.UNDERSCORE, 0); }
+		public ValueContext(ParserRuleContext parent, int invokingState) {
+			super(parent, invokingState);
+		}
+		@Override public int getRuleIndex() { return RULE_value; }
+	}
+
+	public final ValueContext value() throws RecognitionException {
+		ValueContext _localctx = new ValueContext(_ctx, getState());
+		enterRule(_localctx, 18, RULE_value);
+		int _la;
+		try {
+			enterOuterAlt(_localctx, 1);
+			{
+			setState(85);
+			_la = _input.LA(1);
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 6148L) != 0)) ) {
+			_errHandler.recoverInline(this);
+			}
+			else {
+				if ( _input.LA(1)==Token.EOF ) matchedEOF = true;
+				_errHandler.reportMatch(this);
+				consume();
+			}
+			}
+		}
+		catch (RecognitionException re) {
+			_localctx.exception = re;
+			_errHandler.reportError(this, re);
+			_errHandler.recover(this, re);
+		}
+		finally {
+			exitRule();
+		}
+		return _localctx;
+	}
+
 	public static final String _serializedATN =
-		"\u0004\u0001\r@\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\rX\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
-		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0001\u0000\u0004\u0000\u0010"+
-		"\b\u0000\u000b\u0000\f\u0000\u0011\u0001\u0000\u0001\u0000\u0001\u0001"+
-		"\u0001\u0001\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002"+
-		"\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003"+
-		"\u0001\u0003\u0001\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0005\u0004"+
-		"(\b\u0004\n\u0004\f\u0004+\t\u0004\u0001\u0004\u0003\u0004.\b\u0004\u0001"+
-		"\u0004\u0001\u0004\u0003\u00042\b\u0004\u0001\u0005\u0001\u0005\u0001"+
-		"\u0005\u0001\u0005\u0001\u0005\u0001\u0005\u0001\u0006\u0001\u0006\u0001"+
-		"\u0006\u0001\u0006\u0001\u0006\u0001\u0006\u0001\u0006\u0000\u0000\u0007"+
-		"\u0000\u0002\u0004\u0006\b\n\f\u0000\u0000<\u0000\u000f\u0001\u0000\u0000"+
-		"\u0000\u0002\u0015\u0001\u0000\u0000\u0000\u0004\u0017\u0001\u0000\u0000"+
-		"\u0000\u0006\u001c\u0001\u0000\u0000\u0000\b$\u0001\u0000\u0000\u0000"+
-		"\n3\u0001\u0000\u0000\u0000\f9\u0001\u0000\u0000\u0000\u000e\u0010\u0003"+
-		"\u0002\u0001\u0000\u000f\u000e\u0001\u0000\u0000\u0000\u0010\u0011\u0001"+
-		"\u0000\u0000\u0000\u0011\u000f\u0001\u0000\u0000\u0000\u0011\u0012\u0001"+
-		"\u0000\u0000\u0000\u0012\u0013\u0001\u0000\u0000\u0000\u0013\u0014\u0005"+
-		"\u0000\u0000\u0001\u0014\u0001\u0001\u0000\u0000\u0000\u0015\u0016\u0003"+
-		"\u0004\u0002\u0000\u0016\u0003\u0001\u0000\u0000\u0000\u0017\u0018\u0005"+
-		"\u000b\u0000\u0000\u0018\u0019\u0005\u0003\u0000\u0000\u0019\u001a\u0003"+
-		"\u0006\u0003\u0000\u001a\u001b\u0005\n\u0000\u0000\u001b\u0005\u0001\u0000"+
-		"\u0000\u0000\u001c\u001d\u0005\u0001\u0000\u0000\u001d\u001e\u0005\u0005"+
-		"\u0000\u0000\u001e\u001f\u0005\u000b\u0000\u0000\u001f \u0005\u0006\u0000"+
-		"\u0000 !\u0005\u0007\u0000\u0000!\"\u0003\b\u0004\u0000\"#\u0005\b\u0000"+
-		"\u0000#\u0007\u0001\u0000\u0000\u0000$)\u0003\n\u0005\u0000%&\u0005\t"+
-		"\u0000\u0000&(\u0003\n\u0005\u0000\'%\u0001\u0000\u0000\u0000(+\u0001"+
-		"\u0000\u0000\u0000)\'\u0001\u0000\u0000\u0000)*\u0001\u0000\u0000\u0000"+
-		"*-\u0001\u0000\u0000\u0000+)\u0001\u0000\u0000\u0000,.\u0005\t\u0000\u0000"+
-		"-,\u0001\u0000\u0000\u0000-.\u0001\u0000\u0000\u0000./\u0001\u0000\u0000"+
-		"\u0000/1\u0003\f\u0006\u000002\u0005\t\u0000\u000010\u0001\u0000\u0000"+
-		"\u000012\u0001\u0000\u0000\u00002\t\u0001\u0000\u0000\u000034\u0005\u0005"+
-		"\u0000\u000045\u0005\f\u0000\u000056\u0005\u0006\u0000\u000067\u0005\u0004"+
-		"\u0000\u000078\u0005\u000b\u0000\u00008\u000b\u0001\u0000\u0000\u0000"+
-		"9:\u0005\u0005\u0000\u0000:;\u0005\u0002\u0000\u0000;<\u0005\u0006\u0000"+
-		"\u0000<=\u0005\u0004\u0000\u0000=>\u0005\u000b\u0000\u0000>\r\u0001\u0000"+
-		"\u0000\u0000\u0004\u0011)-1";
+		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
+		"\b\u0007\b\u0002\t\u0007\t\u0001\u0000\u0004\u0000\u0016\b\u0000\u000b"+
+		"\u0000\f\u0000\u0017\u0001\u0000\u0001\u0000\u0001\u0001\u0001\u0001\u0001"+
+		"\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0002\u0001\u0003\u0001"+
+		"\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001\u0003\u0001"+
+		"\u0003\u0001\u0004\u0001\u0004\u0001\u0004\u0005\u0004.\b\u0004\n\u0004"+
+		"\f\u00041\t\u0004\u0001\u0005\u0001\u0005\u0001\u0005\u0005\u00056\b\u0005"+
+		"\n\u0005\f\u00059\t\u0005\u0001\u0005\u0003\u0005<\b\u0005\u0001\u0005"+
+		"\u0001\u0005\u0003\u0005@\b\u0005\u0001\u0006\u0001\u0006\u0001\u0006"+
+		"\u0001\u0006\u0001\u0006\u0001\u0006\u0001\u0007\u0001\u0007\u0001\u0007"+
+		"\u0001\u0007\u0001\u0007\u0001\u0007\u0001\b\u0001\b\u0001\b\u0005\bQ"+
+		"\b\b\n\b\f\bT\t\b\u0001\t\u0001\t\u0001\t\u0000\u0000\n\u0000\u0002\u0004"+
+		"\u0006\b\n\f\u000e\u0010\u0012\u0000\u0001\u0002\u0000\u0002\u0002\u000b"+
+		"\fS\u0000\u0015\u0001\u0000\u0000\u0000\u0002\u001b\u0001\u0000\u0000"+
+		"\u0000\u0004\u001d\u0001\u0000\u0000\u0000\u0006\"\u0001\u0000\u0000\u0000"+
+		"\b*\u0001\u0000\u0000\u0000\n2\u0001\u0000\u0000\u0000\fA\u0001\u0000"+
+		"\u0000\u0000\u000eG\u0001\u0000\u0000\u0000\u0010M\u0001\u0000\u0000\u0000"+
+		"\u0012U\u0001\u0000\u0000\u0000\u0014\u0016\u0003\u0002\u0001\u0000\u0015"+
+		"\u0014\u0001\u0000\u0000\u0000\u0016\u0017\u0001\u0000\u0000\u0000\u0017"+
+		"\u0015\u0001\u0000\u0000\u0000\u0017\u0018\u0001\u0000\u0000\u0000\u0018"+
+		"\u0019\u0001\u0000\u0000\u0000\u0019\u001a\u0005\u0000\u0000\u0001\u001a"+
+		"\u0001\u0001\u0000\u0000\u0000\u001b\u001c\u0003\u0004\u0002\u0000\u001c"+
+		"\u0003\u0001\u0000\u0000\u0000\u001d\u001e\u0005\u000b\u0000\u0000\u001e"+
+		"\u001f\u0005\u0003\u0000\u0000\u001f \u0003\u0006\u0003\u0000 !\u0005"+
+		"\n\u0000\u0000!\u0005\u0001\u0000\u0000\u0000\"#\u0005\u0001\u0000\u0000"+
+		"#$\u0005\u0005\u0000\u0000$%\u0003\b\u0004\u0000%&\u0005\u0006\u0000\u0000"+
+		"&\'\u0005\u0007\u0000\u0000\'(\u0003\n\u0005\u0000()\u0005\b\u0000\u0000"+
+		")\u0007\u0001\u0000\u0000\u0000*/\u0005\u000b\u0000\u0000+,\u0005\t\u0000"+
+		"\u0000,.\u0005\u000b\u0000\u0000-+\u0001\u0000\u0000\u0000.1\u0001\u0000"+
+		"\u0000\u0000/-\u0001\u0000\u0000\u0000/0\u0001\u0000\u0000\u00000\t\u0001"+
+		"\u0000\u0000\u00001/\u0001\u0000\u0000\u000027\u0003\f\u0006\u000034\u0005"+
+		"\t\u0000\u000046\u0003\f\u0006\u000053\u0001\u0000\u0000\u000069\u0001"+
+		"\u0000\u0000\u000075\u0001\u0000\u0000\u000078\u0001\u0000\u0000\u0000"+
+		"8;\u0001\u0000\u0000\u000097\u0001\u0000\u0000\u0000:<\u0005\t\u0000\u0000"+
+		";:\u0001\u0000\u0000\u0000;<\u0001\u0000\u0000\u0000<=\u0001\u0000\u0000"+
+		"\u0000=?\u0003\u000e\u0007\u0000>@\u0005\t\u0000\u0000?>\u0001\u0000\u0000"+
+		"\u0000?@\u0001\u0000\u0000\u0000@\u000b\u0001\u0000\u0000\u0000AB\u0005"+
+		"\u0005\u0000\u0000BC\u0003\u0010\b\u0000CD\u0005\u0006\u0000\u0000DE\u0005"+
+		"\u0004\u0000\u0000EF\u0005\u000b\u0000\u0000F\r\u0001\u0000\u0000\u0000"+
+		"GH\u0005\u0005\u0000\u0000HI\u0005\u0002\u0000\u0000IJ\u0005\u0006\u0000"+
+		"\u0000JK\u0005\u0004\u0000\u0000KL\u0005\u000b\u0000\u0000L\u000f\u0001"+
+		"\u0000\u0000\u0000MR\u0003\u0012\t\u0000NO\u0005\t\u0000\u0000OQ\u0003"+
+		"\u0012\t\u0000PN\u0001\u0000\u0000\u0000QT\u0001\u0000\u0000\u0000RP\u0001"+
+		"\u0000\u0000\u0000RS\u0001\u0000\u0000\u0000S\u0011\u0001\u0000\u0000"+
+		"\u0000TR\u0001\u0000\u0000\u0000UV\u0007\u0000\u0000\u0000V\u0013\u0001"+
+		"\u0000\u0000\u0000\u0006\u0017/7;?R";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

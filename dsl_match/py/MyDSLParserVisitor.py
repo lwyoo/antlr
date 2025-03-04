@@ -29,6 +29,11 @@ class MyDSLParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by MyDSLParser#paramList.
+    def visitParamList(self, ctx:MyDSLParser.ParamListContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by MyDSLParser#matchCaseList.
     def visitMatchCaseList(self, ctx:MyDSLParser.MatchCaseListContext):
         return self.visitChildren(ctx)
@@ -41,6 +46,16 @@ class MyDSLParserVisitor(ParseTreeVisitor):
 
     # Visit a parse tree produced by MyDSLParser#defaultCase.
     def visitDefaultCase(self, ctx:MyDSLParser.DefaultCaseContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by MyDSLParser#paramValues.
+    def visitParamValues(self, ctx:MyDSLParser.ParamValuesContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by MyDSLParser#value.
+    def visitValue(self, ctx:MyDSLParser.ValueContext):
         return self.visitChildren(ctx)
 
 
