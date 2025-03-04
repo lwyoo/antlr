@@ -5,8 +5,14 @@ int y = 20;
 if (x > y) {
 std::cout << "x is greater" << std::endl;
 std::cout << "y~~ is greater" << std::endl;
+std::cout << "x is greater" << std::endl;
+std::cout << "y~~ is greater" << std::endl;
 } else {
 std::cout << "y is greater" << std::endl;
+std::cout << "y is greater" << std::endl;
+std::cout << "y~~ is greater" << std::endl;
+std::cout << "y~~ is greater" << std::endl;
+std::cout << "y~~ is greater" << std::endl;
 }
 return 0;
 }

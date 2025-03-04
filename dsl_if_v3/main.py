@@ -29,30 +29,42 @@ class CodeGenerator(MyDSLParserVisitor):
         return f'std::cout << {ctx.STRING().getText()} << std::endl;'
 
     def visitIfElse(self, ctx):
-        print("visitIfElse() - ", ctx.getText())
-        cond = self.visit(ctx.expr())
+        print("visitIfElse() - ", ctx.getText())  # 🔹 전체 `if-else` 블록을 출력
+        cond = self.visit(ctx.expr())  # 🔹 `if` 조건을 파싱
         print("cond: ", cond)
 
-        # 🔹 IF 블록 내부 stmt 개수 확인 (전체 가져오기)
-        if_stmts = ctx.stmt()[:-1]  # 🔹 ELSE 블록 제외하고 if 블록 stmt만 가져오기
-        print(f"🔹 IF 블록 stmt 개수: {len(if_stmts)}")
+        # 🔹 전체 stmt 리스트 가져오기
+        all_statements = ctx.stmt()
+        print(f"🔹 전체 stmt 개수: {len(all_statements)}")
 
-        # 🔹 ELSE 블록의 stmt 가져오기 (ELSE가 존재하는 경우만)
-        else_stmts = []
+        # 🔹 `{`(LBRACE)와 `}`(RBRACE)의 위치 찾기
+        open_brace_index = next(i for i, child in enumerate(ctx.children) if child.getText() == "{")
+        close_brace_index = next(i for i, child in enumerate(ctx.children) if child.getText() == "}")
+        print("open_brace_index: ", open_brace_index)
+        print("close_brace_index: ", close_brace_index)
+
+        # 🔹 ELSE 블록 존재 여부 확인
         if ctx.ELSE():
-            else_stmts = [ctx.stmt()[-1]]  # 🔹 ELSE 블록은 마지막 stmt
-            print(f"🔹 ELSE 블록 stmt 개수: {len(else_stmts)}")
+            # 🔹 ELSE가 있는 경우: `}` 이후부터 else 블록 시작
+            if_block_stmts = all_statements[: (close_brace_index - open_brace_index - 1)]  # 🔹 `{}` 내부 stmt 개수 계산
+            else_block_stmts = all_statements[(close_brace_index - open_brace_index - 1):]  # 🔹 ELSE 블록 stmt 가져오기
+        else:
+            # 🔹 ELSE가 없는 경우: 전체 stmt는 if 블록에 속함
+            if_block_stmts = all_statements[: (close_brace_index - open_brace_index - 1)]
+            else_block_stmts = []
+
+        print(f"🔹 IF 블록 stmt 개수: {len(if_block_stmts)}")
+        print(f"🔹 ELSE 블록 stmt 개수: {len(else_block_stmts)}")
 
         # 🔹 IF 블록 코드 변환
-        if_body = "\n".join(self.visit(stmt) for stmt in if_stmts)
+        if_body = "\n".join(self.visit(stmt) for stmt in if_block_stmts)
 
         # 🔹 ELSE 블록 코드 변환 (존재하는 경우만)
-        if else_stmts:
-            else_body = "\n".join(self.visit(stmt) for stmt in else_stmts)
+        if else_block_stmts:
+            else_body = "\n".join(self.visit(stmt) for stmt in else_block_stmts)
             return f"if ({cond}) {{\n{if_body}\n}} else {{\n{else_body}\n}}"
         else:
             return f"if ({cond}) {{\n{if_body}\n}}"
-
 
     def visitExpr(self, ctx):
         print("visitExpr() - ", ctx.getText())
@@ -111,8 +123,14 @@ let y = 20;
 if x > y {
     print("x is greater");
     print("y~~ is greater");
+    print("x is greater");
+    print("y~~ is greater");
 } else {
     print("y is greater");
+    print("y is greater");
+    print("y~~ is greater");
+    print("y~~ is greater");
+    print("y~~ is greater");
 }
 """
 
