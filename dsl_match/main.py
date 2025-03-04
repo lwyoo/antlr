@@ -14,7 +14,7 @@ class CodeGenerator(MyDSLParserVisitor):
 
     def visitMatchExpr(self, ctx):
         var_name = ctx.parentCtx.ID().getText()
-        args = [arg.getText() for arg in ctx.paramList().ID()]  # 여러 개의 인자를 가져오기
+        args = [arg.getText() for arg in ctx.paramList().ID()]
         cases = self.visit(ctx.matchCaseList())
 
         # 🔹 ARGS_0, ARGS_1 등의 잘못된 명칭을 올바르게 `args[i]`로 대체
@@ -44,8 +44,14 @@ class CodeGenerator(MyDSLParserVisitor):
 
     def visitMatchCase(self, ctx):
         values = [self.visit(value) for value in ctx.paramValues().value()]
-        # 🔹 불필요한 콤마(,)를 제거하고 `&&`를 올바르게 연결
-        condition = " && ".join(f"{values[i]} == ARGS_{i}" for i in range(len(values)))
+
+        # 🔹 `_`(와일드카드) 처리: 해당 인자는 비교 조건에서 제외
+        conditions = []
+        for i, value in enumerate(values):
+            if value != "true":  # `_`이면 무시
+                conditions.append(f"ARGS_{i} == {value}")
+
+        condition = " && ".join(conditions) if conditions else "true"  # 모든 `_`이면 항상 참
         result = ctx.ID().getText()
         return (condition, result)
 
@@ -58,7 +64,7 @@ class CodeGenerator(MyDSLParserVisitor):
         elif ctx.ID():
             return ctx.ID().getText()
         elif ctx.UNDERSCORE():
-            return "true"  # `_`는 `else` 역할을 하므로 항상 참으로 설정
+            return "true"  # `_`는 비교에서 제외됨
 
 def generate_cpp_code(input_text):
     lexer = MyDSLLexer(InputStream(input_text))
