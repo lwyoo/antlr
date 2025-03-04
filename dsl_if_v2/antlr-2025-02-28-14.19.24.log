@@ -1,0 +1,79 @@
+2025-02-28 14:19:24:237 grammar LogManager.java:25 before: (PARSER_GRAMMAR MyDSLParser (OPTIONS (= tokenVocab MyDSLLexer)) (RULES (RULE prog (BLOCK (ALT (+ (BLOCK (ALT stmt))) EOF))) (RULE stmt (BLOCK (ALT LET ID EQUAL expr SEMICOLON) (ALT IF expr LBRACE (* (BLOCK (ALT stmt))) RBRACE (? (BLOCK (ALT ELSE LBRACE (* (BLOCK (ALT stmt))) RBRACE)))) (ALT PRINT LPAREN STRING RPAREN SEMICOLON))) (RULE expr (BLOCK (ALT ID) (ALT NUMBER) (ALT expr OP expr) (ALT LPAREN expr RPAREN) (ALT expr COMPARE expr)))))
+2025-02-28 14:19:24:249 grammar LogManager.java:25 after: (PARSER_GRAMMAR MyDSLParser (OPTIONS (= tokenVocab MyDSLLexer)) (RULES (RULE prog (BLOCK (ALT (+ (BLOCK (ALT stmt))) EOF))) (RULE stmt (BLOCK (ALT LET ID EQUAL expr SEMICOLON) (ALT IF expr LBRACE (* (BLOCK (ALT stmt))) RBRACE (? (BLOCK (ALT ELSE LBRACE (* (BLOCK (ALT stmt))) RBRACE)))) (ALT PRINT LPAREN STRING RPAREN SEMICOLON))) (RULE expr (BLOCK (ALT ID) (ALT NUMBER) (ALT expr OP expr) (ALT LPAREN expr RPAREN) (ALT expr COMPARE expr)))))
+2025-02-28 14:19:24:413 left-recursion LogManager.java:25 expr
+    :   ( {} ID<tokenIndex=123> 
+        | NUMBER<tokenIndex=127> 
+        | LPAREN<tokenIndex=139> expr<tokenIndex=141> RPAREN<tokenIndex=143> 
+        )
+        (
+          {precpred(_ctx, 3)}?<p=3> OP<tokenIndex=133> expr<tokenIndex=135,p=4>
+                  | {precpred(_ctx, 1)}?<p=1> COMPARE<tokenIndex=149> expr<tokenIndex=151,p=2>
+        )*
+    ;
+2025-02-28 14:19:24:419 grammar LogManager.java:25 added: (RULE expr (BLOCK (ALT (BLOCK (ALT {} (ID (ELEMENT_OPTIONS (= tokenIndex 123)))) (ALT (NUMBER (ELEMENT_OPTIONS (= tokenIndex 127)))) (ALT (LPAREN (ELEMENT_OPTIONS (= tokenIndex 139))) (expr (ELEMENT_OPTIONS (= tokenIndex 141))) (RPAREN (ELEMENT_OPTIONS (= tokenIndex 143))))) (* (BLOCK (ALT ({precpred(_ctx, 3)}? (ELEMENT_OPTIONS (= p 3))) (OP (ELEMENT_OPTIONS (= tokenIndex 133))) (expr (ELEMENT_OPTIONS (= tokenIndex 135) (= p 4)))) (ALT ({precpred(_ctx, 1)}? (ELEMENT_OPTIONS (= p 1))) (COMPARE (ELEMENT_OPTIONS (= tokenIndex 149))) (expr (ELEMENT_OPTIONS (= tokenIndex 151) (= p 2)))))))))
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import LET=1
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import IF=2
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import ELSE=3
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import PRINT=4
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import ID=5
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import NUMBER=6
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import STRING=7
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import WS=8
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import EQUAL=9
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import SEMICOLON=10
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import LPAREN=11
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import RPAREN=12
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import LBRACE=13
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import RBRACE=14
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import OP=15
+2025-02-28 14:19:24:444 grammar LogManager.java:25 import COMPARE=16
+2025-02-28 14:19:24:445 grammar LogManager.java:25 import 'let'=1
+2025-02-28 14:19:24:445 grammar LogManager.java:25 import 'if'=2
+2025-02-28 14:19:24:445 grammar LogManager.java:25 import 'else'=3
+2025-02-28 14:19:24:445 grammar LogManager.java:25 import 'print'=4
+2025-02-28 14:19:24:445 grammar LogManager.java:25 import '='=9
+2025-02-28 14:19:24:445 grammar LogManager.java:25 import ';'=10
+2025-02-28 14:19:24:445 grammar LogManager.java:25 import '('=11
+2025-02-28 14:19:24:445 grammar LogManager.java:25 import ')'=12
+2025-02-28 14:19:24:445 grammar LogManager.java:25 import '{'=13
+2025-02-28 14:19:24:445 grammar LogManager.java:25 import '}'=14
+2025-02-28 14:19:24:446 grammar LogManager.java:25 tokens={LET=1, IF=2, ELSE=3, PRINT=4, ID=5, NUMBER=6, STRING=7, WS=8, EQUAL=9, SEMICOLON=10, LPAREN=11, RPAREN=12, LBRACE=13, RBRACE=14, OP=15, COMPARE=16, 'let'=1, 'if'=2, 'else'=3, 'print'=4, '='=9, ';'=10, '('=11, ')'=12, '{'=13, '}'=14}
+2025-02-28 14:19:24:446 semantics LogManager.java:25 tokens={EOF=-1, LET=1, IF=2, ELSE=3, PRINT=4, ID=5, NUMBER=6, STRING=7, WS=8, EQUAL=9, SEMICOLON=10, LPAREN=11, RPAREN=12, LBRACE=13, RBRACE=14, OP=15, COMPARE=16}
+2025-02-28 14:19:24:447 semantics LogManager.java:25 strings={'let'=1, 'if'=2, 'else'=3, 'print'=4, '='=9, ';'=10, '('=11, ')'=12, '{'=13, '}'=14}
+2025-02-28 14:19:24:473 LL1 LogManager.java:25 
+DECISION 0 in rule prog
+2025-02-28 14:19:24:473 LL1 LogManager.java:25 look=[{1..2, 4}, <EOF>]
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 LL(1)? true
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 
+DECISION 1 in rule stmt
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 look=[{1..2, 4}, 14]
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 LL(1)? true
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 
+DECISION 2 in rule stmt
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 look=[{1..2, 4}, 14]
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 LL(1)? true
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 
+DECISION 3 in rule stmt
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 look=[3, {<EOF>, 1..2, 4, 14}]
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 LL(1)? true
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 
+DECISION 4 in rule stmt
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 look=[1, 2, 4]
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 LL(1)? true
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 
+DECISION 5 in rule expr
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 look=[5, 6, 11]
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 LL(1)? true
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 
+DECISION 6 in rule expr
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 look=[null, null]
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 LL(1)? false
+2025-02-28 14:19:24:474 LL1 LogManager.java:25 
+DECISION 7 in rule expr
+2025-02-28 14:19:24:475 LL1 LogManager.java:25 look=[null, null]
+2025-02-28 14:19:24:475 LL1 LogManager.java:25 LL(1)? false
+2025-02-28 14:19:24:529 action-translator LogManager.java:25 translate 
+2025-02-28 14:19:24:530 action-translator LogManager.java:25 translate precpred(_ctx, 3)
+2025-02-28 14:19:24:531 action-translator LogManager.java:25 translate precpred(_ctx, 1)
+2025-02-28 14:19:24:532 action-translator LogManager.java:25 translate precpred(_ctx, 3)
+2025-02-28 14:19:24:532 action-translator LogManager.java:25 translate precpred(_ctx, 1)
