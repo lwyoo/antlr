@@ -31,7 +31,6 @@ class CodeGenerator(MyDSLParserVisitor):
 
         cpp_code = ""
 
-        # ✅ 첫 번째 if 문 생성
         if cases:
             first_condition, first_result = cases[0]
             if first_condition != "true":
@@ -39,33 +38,65 @@ class CodeGenerator(MyDSLParserVisitor):
             else:
                 cpp_code += f"THIS_VAR = {first_result};"
 
-        # ✅ 나머지 `else if` 추가
         for condition, result in cases[1:]:
             if condition != "true":
                 cpp_code += f" else if ({condition}) {{\n  THIS_VAR = {result};\n}}"
             else:
-                default_case = result  # `true`는 `else`로 변환
+                default_case = result
 
-        # ✅ `_`(와일드카드) 또는 기본 케이스가 있으면 `else` 추가
         if default_case:
             cpp_code += f" else {{\n  THIS_VAR = {default_case};\n}}"
 
         return cpp_code
 
     def visitMatchCase(self, ctx):
-        values = [self.visit(value) for value in ctx.paramValues().value()]
+        values = [self.visit(param) for param in ctx.paramValues().paramValue()]
         
         conditions = []
         for i, value in enumerate(values):
-            if value != "_":  # `_`(와일드카드)는 비교하지 않음
+            if value and value.strip():  # ✅ `None` 체크 추가
                 conditions.append(f"ARGS_{i} == {value}")
 
         condition = " && ".join(conditions) if conditions else "true"
-        result = ctx.ID().getText()
+        result = self.visit(ctx.expression() or ctx.value())
+
         return (condition, result)
 
+
+
+
+
+
     def visitDefaultCase(self, ctx):
-        return ctx.ID().getText()
+        return self.visit(ctx.expression() or ctx.value())
+
+    def visitExpression(self, ctx):
+        terms = [self.visit(term) for term in ctx.term()]
+        operators = [op.getText() for op in ctx.getTokens(MyDSLParser.PLUS) + ctx.getTokens(MyDSLParser.MINUS)]
+
+        expr = terms[0]
+        for i in range(len(operators)):
+            expr += f" {operators[i]} {terms[i + 1]}"
+
+        return expr
+
+    def visitTerm(self, ctx):
+        factors = [self.visit(factor) for factor in ctx.factor()]
+        operators = [op.getText() for op in ctx.getTokens(MyDSLParser.MUL) + ctx.getTokens(MyDSLParser.DIV)]
+
+        expr = factors[0]
+        for i in range(len(operators)):
+            expr += f" {operators[i]} {factors[i + 1]}"
+
+        return expr
+
+    def visitFactor(self, ctx):
+        if ctx.NUMBER():
+            return ctx.NUMBER().getText()
+        elif ctx.ID():
+            return ctx.ID().getText()
+        elif ctx.expression():
+            return f"({self.visit(ctx.expression())})"
 
     def visitValue(self, ctx):
         if ctx.NUMBER():
@@ -73,40 +104,43 @@ class CodeGenerator(MyDSLParserVisitor):
         elif ctx.ID():
             return ctx.ID().getText()
         elif ctx.UNDERSCORE():
-            return "_"  # `_` 유지
+            return ""  # `_`를 유지하여 비교에서 제거 가능
 
 
 def generate_cpp_code(input_text):
-    try:
-        lexer = MyDSLLexer(InputStream(input_text))
-        tokens = CommonTokenStream(lexer)
-        parser = MyDSLParser(tokens)
-        tree = parser.prog()
+    lexer = MyDSLLexer(InputStream(input_text))
+    tokens = CommonTokenStream(lexer)
+    parser = MyDSLParser(tokens)
+    tree = parser.prog()
 
-        visitor = CodeGenerator()
-        cpp_code = visitor.visit(tree)
+    visitor = CodeGenerator()
+    cpp_code = visitor.visit(tree)
 
-        # 🔹 파일 생성
-        with open("output.cpp", "w") as f:
-            f.write(f"#include <iostream>\nint main() {{\n{cpp_code}\nreturn 0;\n}}")
-        print("C++ 코드가 생성되었습니다: output.cpp")
+    with open("output.cpp", "w") as f:
+        f.write(f"#include <iostream>\nint main() {{\n{cpp_code}\nreturn 0;\n}}")
+    print("C++ 코드가 생성되었습니다: output.cpp")
 
-        return cpp_code
-    except Exception as e:
-        print(f"오류 발생: {e}")
-        return ""
+    return cpp_code
+
 
 # ✅ DSL 코드 예제
+# dsl_code = """
+# this = match(arg1, arg2, arg3) {
+#   (0x1, 0x2, 0x3) => this,
+#   (x, y, _) => OFF,
+#   (_, y, _) => OFF,
+#   (_, _, 0x3) => this + (arg1 * 0.00001)
+# };
+# """
 dsl_code = """
 this = match(arg1, arg2, arg3) {
   (0x1, 0x2, 0x3) => ON,
   (x, y, _) => OFF,
-  (_, y, _) => OFF,
-  (_, _, _) => DISPLAY_OFF,
+  (_, _, 0x3) => this + (arg1 * 0.00001)
 };
 """
 
-# ✅ C++ 코드 변환 실행
+# ✅ 실행
 cpp_code = generate_cpp_code(dsl_code)
 if cpp_code:
     print("#include <iostream>\nint main() {\n" + cpp_code + "\nreturn 0;\n}")

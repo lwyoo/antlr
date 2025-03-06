@@ -12,11 +12,15 @@ matchExpr: MATCH LPAREN paramList RPAREN LBRACE matchCaseList RBRACE ;
 
 paramList: ID (COMMA ID)* ;
 
-matchCaseList: matchCase (COMMA matchCase)* (COMMA defaultCase)? ;  // 🔹 마지막 `,` 허용
+matchCaseList: matchCase (COMMA matchCase)* (COMMA defaultCase)? ;
 
-matchCase: LPAREN paramValues RPAREN ARROW ID;
-defaultCase: LPAREN UNDERSCORE RPAREN ARROW ID;
+matchCase: LPAREN paramValues RPAREN ARROW expression;
+defaultCase: LPAREN UNDERSCORE RPAREN ARROW expression;
 
-paramValues: value (COMMA value)* ;
+paramValues: paramValue (COMMA paramValue)* ;
+paramValue: value | UNDERSCORE ;  // ✅ `_`을 와일드카드로 처리
+value: NUMBER | ID ;
 
-value: NUMBER | ID | UNDERSCORE ;
+expression: term ((PLUS | MINUS) term)* ;  // ✅ 연산자 지원
+term: factor ((MUL | DIV) factor)* ;
+factor: NUMBER | ID | LPAREN expression RPAREN ;

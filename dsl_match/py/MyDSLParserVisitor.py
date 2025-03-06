@@ -54,8 +54,28 @@ class MyDSLParserVisitor(ParseTreeVisitor):
         return self.visitChildren(ctx)
 
 
+    # Visit a parse tree produced by MyDSLParser#paramValue.
+    def visitParamValue(self, ctx:MyDSLParser.ParamValueContext):
+        return self.visitChildren(ctx)
+
+
     # Visit a parse tree produced by MyDSLParser#value.
     def visitValue(self, ctx:MyDSLParser.ValueContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by MyDSLParser#expression.
+    def visitExpression(self, ctx:MyDSLParser.ExpressionContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by MyDSLParser#term.
+    def visitTerm(self, ctx:MyDSLParser.TermContext):
+        return self.visitChildren(ctx)
+
+
+    # Visit a parse tree produced by MyDSLParser#factor.
+    def visitFactor(self, ctx:MyDSLParser.FactorContext):
         return self.visitChildren(ctx)
 
 
