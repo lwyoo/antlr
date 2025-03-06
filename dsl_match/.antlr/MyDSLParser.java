@@ -18,7 +18,7 @@ public class MyDSLParser extends Parser {
 	public static final int
 		MATCH=1, UNDERSCORE=2, EQUAL=3, ARROW=4, LPAREN=5, RPAREN=6, LBRACE=7, 
 		RBRACE=8, COMMA=9, SEMICOLON=10, PLUS=11, MINUS=12, MUL=13, DIV=14, ID=15, 
-		NUMBER=16, WS=17;
+		FLOAT=16, NUMBER=17, WS=18;
 	public static final int
 		RULE_prog = 0, RULE_stmt = 1, RULE_assignment = 2, RULE_matchExpr = 3, 
 		RULE_paramList = 4, RULE_matchCaseList = 5, RULE_matchCase = 6, RULE_defaultCase = 7, 
@@ -44,7 +44,7 @@ public class MyDSLParser extends Parser {
 		return new String[] {
 			null, "MATCH", "UNDERSCORE", "EQUAL", "ARROW", "LPAREN", "RPAREN", "LBRACE", 
 			"RBRACE", "COMMA", "SEMICOLON", "PLUS", "MINUS", "MUL", "DIV", "ID", 
-			"NUMBER", "WS"
+			"FLOAT", "NUMBER", "WS"
 		};
 	}
 	private static final String[] _SYMBOLIC_NAMES = makeSymbolicNames();
@@ -568,6 +568,7 @@ public class MyDSLParser extends Parser {
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
 			case ID:
+			case FLOAT:
 			case NUMBER:
 				enterOuterAlt(_localctx, 1);
 				{
@@ -599,6 +600,7 @@ public class MyDSLParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class ValueContext extends ParserRuleContext {
+		public TerminalNode FLOAT() { return getToken(MyDSLParser.FLOAT, 0); }
 		public TerminalNode NUMBER() { return getToken(MyDSLParser.NUMBER, 0); }
 		public TerminalNode ID() { return getToken(MyDSLParser.ID, 0); }
 		public ValueContext(ParserRuleContext parent, int invokingState) {
@@ -616,7 +618,7 @@ public class MyDSLParser extends Parser {
 			{
 			setState(94);
 			_la = _input.LA(1);
-			if ( !(_la==ID || _la==NUMBER) ) {
+			if ( !((((_la) & ~0x3f) == 0 && ((1L << _la) & 229376L) != 0)) ) {
 			_errHandler.recoverInline(this);
 			}
 			else {
@@ -775,6 +777,7 @@ public class MyDSLParser extends Parser {
 
 	@SuppressWarnings("CheckReturnValue")
 	public static class FactorContext extends ParserRuleContext {
+		public TerminalNode FLOAT() { return getToken(MyDSLParser.FLOAT, 0); }
 		public TerminalNode NUMBER() { return getToken(MyDSLParser.NUMBER, 0); }
 		public TerminalNode ID() { return getToken(MyDSLParser.ID, 0); }
 		public TerminalNode LPAREN() { return getToken(MyDSLParser.LPAREN, 0); }
@@ -792,31 +795,38 @@ public class MyDSLParser extends Parser {
 		FactorContext _localctx = new FactorContext(_ctx, getState());
 		enterRule(_localctx, 26, RULE_factor);
 		try {
-			setState(118);
+			setState(119);
 			_errHandler.sync(this);
 			switch (_input.LA(1)) {
-			case NUMBER:
+			case FLOAT:
 				enterOuterAlt(_localctx, 1);
 				{
 				setState(112);
+				match(FLOAT);
+				}
+				break;
+			case NUMBER:
+				enterOuterAlt(_localctx, 2);
+				{
+				setState(113);
 				match(NUMBER);
 				}
 				break;
 			case ID:
-				enterOuterAlt(_localctx, 2);
+				enterOuterAlt(_localctx, 3);
 				{
-				setState(113);
+				setState(114);
 				match(ID);
 				}
 				break;
 			case LPAREN:
-				enterOuterAlt(_localctx, 3);
+				enterOuterAlt(_localctx, 4);
 				{
-				setState(114);
-				match(LPAREN);
 				setState(115);
-				expression();
+				match(LPAREN);
 				setState(116);
+				expression();
+				setState(117);
 				match(RPAREN);
 				}
 				break;
@@ -836,7 +846,7 @@ public class MyDSLParser extends Parser {
 	}
 
 	public static final String _serializedATN =
-		"\u0004\u0001\u0011y\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
+		"\u0004\u0001\u0012z\u0002\u0000\u0007\u0000\u0002\u0001\u0007\u0001\u0002"+
 		"\u0002\u0007\u0002\u0002\u0003\u0007\u0003\u0002\u0004\u0007\u0004\u0002"+
 		"\u0005\u0007\u0005\u0002\u0006\u0007\u0006\u0002\u0007\u0007\u0007\u0002"+
 		"\b\u0007\b\u0002\t\u0007\t\u0002\n\u0007\n\u0002\u000b\u0007\u000b\u0002"+
@@ -852,25 +862,25 @@ public class MyDSLParser extends Parser {
 		"\u0001\b\u0001\b\u0001\b\u0005\bV\b\b\n\b\f\bY\t\b\u0001\t\u0001\t\u0003"+
 		"\t]\b\t\u0001\n\u0001\n\u0001\u000b\u0001\u000b\u0001\u000b\u0005\u000b"+
 		"d\b\u000b\n\u000b\f\u000bg\t\u000b\u0001\f\u0001\f\u0001\f\u0005\fl\b"+
-		"\f\n\f\f\fo\t\f\u0001\r\u0001\r\u0001\r\u0001\r\u0001\r\u0001\r\u0003"+
-		"\rw\b\r\u0001\r\u0000\u0000\u000e\u0000\u0002\u0004\u0006\b\n\f\u000e"+
-		"\u0010\u0012\u0014\u0016\u0018\u001a\u0000\u0003\u0001\u0000\u000f\u0010"+
-		"\u0001\u0000\u000b\f\u0001\u0000\r\u000et\u0000\u001d\u0001\u0000\u0000"+
-		"\u0000\u0002#\u0001\u0000\u0000\u0000\u0004%\u0001\u0000\u0000\u0000\u0006"+
-		"*\u0001\u0000\u0000\u0000\b2\u0001\u0000\u0000\u0000\n:\u0001\u0000\u0000"+
-		"\u0000\fF\u0001\u0000\u0000\u0000\u000eL\u0001\u0000\u0000\u0000\u0010"+
-		"R\u0001\u0000\u0000\u0000\u0012\\\u0001\u0000\u0000\u0000\u0014^\u0001"+
-		"\u0000\u0000\u0000\u0016`\u0001\u0000\u0000\u0000\u0018h\u0001\u0000\u0000"+
-		"\u0000\u001av\u0001\u0000\u0000\u0000\u001c\u001e\u0003\u0002\u0001\u0000"+
-		"\u001d\u001c\u0001\u0000\u0000\u0000\u001e\u001f\u0001\u0000\u0000\u0000"+
-		"\u001f\u001d\u0001\u0000\u0000\u0000\u001f \u0001\u0000\u0000\u0000 !"+
-		"\u0001\u0000\u0000\u0000!\"\u0005\u0000\u0000\u0001\"\u0001\u0001\u0000"+
-		"\u0000\u0000#$\u0003\u0004\u0002\u0000$\u0003\u0001\u0000\u0000\u0000"+
-		"%&\u0005\u000f\u0000\u0000&\'\u0005\u0003\u0000\u0000\'(\u0003\u0006\u0003"+
-		"\u0000()\u0005\n\u0000\u0000)\u0005\u0001\u0000\u0000\u0000*+\u0005\u0001"+
-		"\u0000\u0000+,\u0005\u0005\u0000\u0000,-\u0003\b\u0004\u0000-.\u0005\u0006"+
-		"\u0000\u0000./\u0005\u0007\u0000\u0000/0\u0003\n\u0005\u000001\u0005\b"+
-		"\u0000\u00001\u0007\u0001\u0000\u0000\u000027\u0005\u000f\u0000\u0000"+
+		"\f\n\f\f\fo\t\f\u0001\r\u0001\r\u0001\r\u0001\r\u0001\r\u0001\r\u0001"+
+		"\r\u0003\rx\b\r\u0001\r\u0000\u0000\u000e\u0000\u0002\u0004\u0006\b\n"+
+		"\f\u000e\u0010\u0012\u0014\u0016\u0018\u001a\u0000\u0003\u0001\u0000\u000f"+
+		"\u0011\u0001\u0000\u000b\f\u0001\u0000\r\u000ev\u0000\u001d\u0001\u0000"+
+		"\u0000\u0000\u0002#\u0001\u0000\u0000\u0000\u0004%\u0001\u0000\u0000\u0000"+
+		"\u0006*\u0001\u0000\u0000\u0000\b2\u0001\u0000\u0000\u0000\n:\u0001\u0000"+
+		"\u0000\u0000\fF\u0001\u0000\u0000\u0000\u000eL\u0001\u0000\u0000\u0000"+
+		"\u0010R\u0001\u0000\u0000\u0000\u0012\\\u0001\u0000\u0000\u0000\u0014"+
+		"^\u0001\u0000\u0000\u0000\u0016`\u0001\u0000\u0000\u0000\u0018h\u0001"+
+		"\u0000\u0000\u0000\u001aw\u0001\u0000\u0000\u0000\u001c\u001e\u0003\u0002"+
+		"\u0001\u0000\u001d\u001c\u0001\u0000\u0000\u0000\u001e\u001f\u0001\u0000"+
+		"\u0000\u0000\u001f\u001d\u0001\u0000\u0000\u0000\u001f \u0001\u0000\u0000"+
+		"\u0000 !\u0001\u0000\u0000\u0000!\"\u0005\u0000\u0000\u0001\"\u0001\u0001"+
+		"\u0000\u0000\u0000#$\u0003\u0004\u0002\u0000$\u0003\u0001\u0000\u0000"+
+		"\u0000%&\u0005\u000f\u0000\u0000&\'\u0005\u0003\u0000\u0000\'(\u0003\u0006"+
+		"\u0003\u0000()\u0005\n\u0000\u0000)\u0005\u0001\u0000\u0000\u0000*+\u0005"+
+		"\u0001\u0000\u0000+,\u0005\u0005\u0000\u0000,-\u0003\b\u0004\u0000-.\u0005"+
+		"\u0006\u0000\u0000./\u0005\u0007\u0000\u0000/0\u0003\n\u0005\u000001\u0005"+
+		"\b\u0000\u00001\u0007\u0001\u0000\u0000\u000027\u0005\u000f\u0000\u0000"+
 		"34\u0005\t\u0000\u000046\u0005\u000f\u0000\u000053\u0001\u0000\u0000\u0000"+
 		"69\u0001\u0000\u0000\u000075\u0001\u0000\u0000\u000078\u0001\u0000\u0000"+
 		"\u00008\t\u0001\u0000\u0000\u000097\u0001\u0000\u0000\u0000:?\u0003\f"+
@@ -895,11 +905,12 @@ public class MyDSLParser extends Parser {
 		"\u0000\u0000\u0000hm\u0003\u001a\r\u0000ij\u0007\u0002\u0000\u0000jl\u0003"+
 		"\u001a\r\u0000ki\u0001\u0000\u0000\u0000lo\u0001\u0000\u0000\u0000mk\u0001"+
 		"\u0000\u0000\u0000mn\u0001\u0000\u0000\u0000n\u0019\u0001\u0000\u0000"+
-		"\u0000om\u0001\u0000\u0000\u0000pw\u0005\u0010\u0000\u0000qw\u0005\u000f"+
-		"\u0000\u0000rs\u0005\u0005\u0000\u0000st\u0003\u0016\u000b\u0000tu\u0005"+
-		"\u0006\u0000\u0000uw\u0001\u0000\u0000\u0000vp\u0001\u0000\u0000\u0000"+
-		"vq\u0001\u0000\u0000\u0000vr\u0001\u0000\u0000\u0000w\u001b\u0001\u0000"+
-		"\u0000\u0000\t\u001f7?DW\\emv";
+		"\u0000om\u0001\u0000\u0000\u0000px\u0005\u0010\u0000\u0000qx\u0005\u0011"+
+		"\u0000\u0000rx\u0005\u000f\u0000\u0000st\u0005\u0005\u0000\u0000tu\u0003"+
+		"\u0016\u000b\u0000uv\u0005\u0006\u0000\u0000vx\u0001\u0000\u0000\u0000"+
+		"wp\u0001\u0000\u0000\u0000wq\u0001\u0000\u0000\u0000wr\u0001\u0000\u0000"+
+		"\u0000ws\u0001\u0000\u0000\u0000x\u001b\u0001\u0000\u0000\u0000\t\u001f"+
+		"7?DW\\emw";
 	public static final ATN _ATN =
 		new ATNDeserializer().deserialize(_serializedATN.toCharArray());
 	static {

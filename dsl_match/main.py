@@ -91,7 +91,9 @@ class CodeGenerator(MyDSLParserVisitor):
         return expr
 
     def visitFactor(self, ctx):
-        if ctx.NUMBER():
+        if ctx.FLOAT():
+            return ctx.FLOAT().getText()  # ✅ 부동소수점 처리
+        elif ctx.NUMBER():
             return ctx.NUMBER().getText()
         elif ctx.ID():
             return ctx.ID().getText()
@@ -136,7 +138,7 @@ dsl_code = """
 this = match(arg1, arg2, arg3) {
   (0x1, 0x2, 0x3) => ON,
   (x, y, _) => OFF,
-  (_, _, 0x3) => this + (arg1 * 0.00001)
+  (_, _, 0x3) => this + arg1 * 0.00001
 };
 """
 
