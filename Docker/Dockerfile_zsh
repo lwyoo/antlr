@@ -1,0 +1,37 @@
+FROM ubuntu:22.04
+
+ENV DEBIAN_FRONTEND=noninteractive
+
+# 1. 루트 권한으로 패키지 설치 + 사용자 생성
+RUN apt update && \
+    apt install -y curl wget git zsh openjdk-11-jdk unzip locales sudo vim autojump && \
+    locale-gen en_US.UTF-8 && \
+    apt clean && \
+    useradd -ms /bin/zsh -G sudo antlruser && \
+    echo 'antlruser ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
+
+# 2. ANTLR 다운로드
+RUN curl -O https://www.antlr.org/download/antlr-4.13.0-complete.jar && \
+    mv antlr-4.13.0-complete.jar /usr/local/lib/
+
+# 3. 사용자 전환
+USER antlruser
+WORKDIR /home/antlruser
+
+# 4. oh-my-zsh + 플러그인 + 설정
+RUN sh -c "$(curl -fsSL https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh)" "" --unattended && \
+    cp ~/.oh-my-zsh/templates/zshrc.zsh-template ~/.zshrc && \
+    sed -i 's/^ZSH_THEME=.*/ZSH_THEME="agnoster"/' ~/.zshrc && \
+    sed -i '/^plugins=/c\plugins=(git zsh-syntax-highlighting zsh-autosuggestions autojump aliases)' ~/.zshrc && \
+    git clone https://github.com/zsh-users/zsh-syntax-highlighting ~/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting && \
+    git clone https://github.com/zsh-users/zsh-autosuggestions ~/.oh-my-zsh/custom/plugins/zsh-autosuggestions && \
+    echo '\n# ANTLR 설정' >> ~/.zshrc && \
+    echo 'export CLASSPATH=".:/usr/local/lib/antlr-4.13.0-complete.jar:$CLASSPATH"' >> ~/.zshrc && \
+    echo 'alias antlr4="java -jar /usr/local/lib/antlr-4.13.0-complete.jar"' >> ~/.zshrc && \
+    echo 'alias grun="java org.antlr.v4.gui.TestRig"' >> ~/.zshrc && \
+    echo 'export JAVA_HOME=/usr/lib/jvm/java-11-openjdk-amd64' >> ~/.zshrc && \
+    echo 'export PATH=$JAVA_HOME/bin:$PATH' >> ~/.zshrc && \
+    echo 'source $ZSH/custom/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh' >> ~/.zshrc
+
+CMD ["zsh"]
+
